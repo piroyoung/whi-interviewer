@@ -12,7 +12,7 @@ class MessageRepository(metaclass=abc.ABCMeta):
 
 @dataclass(frozen=True)
 class StaticMessageRepository(MessageRepository):
-    m: str
+    m: Message
 
     def get(self) -> Message:
-        return Message(self.m)
+        return self.m
