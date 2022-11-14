@@ -1,3 +1,7 @@
+#IDEA project
+.idea
+whi-interviewer.iml
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
