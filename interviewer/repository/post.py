@@ -24,5 +24,6 @@ class TeamsPostRepository(PostRepository):
     endpoint: str
 
     def post(self, m: Message) -> None:
-        requests.post(self.endpoint, json=m.as_teams_body())
+        body = m.as_teams_body()
+        response: requests.Response = requests.post(self.endpoint, json=body)
         return None
