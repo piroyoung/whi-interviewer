@@ -15,13 +15,12 @@ from interviewer.repository.user import UserRepository
 
 if __name__ == "__main__":
     env: Environments = Environments()
-    engine: Engine = create_engine(
-        f"mssql+pyodbc:///?odbc_connect={env.mssql_connection_string}")
+    engine: Engine = create_engine(f"mssql+pyodbc:///?odbc_connect={env.mssql_connection_string}")
 
     user_repository: UserRepository = DatabaseUserRepository(engine)
     message_repository: MessageRepository = DatabaseMessageRepository(engine)
     post_repository: PostRepository = TeamsPostRepository(endpoint=env.teams_incoming_webhook)
 
-    users: List[User] = user_repository.get_random(2)
+    users: List[User] = user_repository.get_random(env.number_of_users)
     messages: List[Message] = message_repository.get_random(1)
     post_repository.post(messages[0], users=users)
