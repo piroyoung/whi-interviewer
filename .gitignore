@@ -1,6 +1,7 @@
 #IDEA project
 .idea
 whi-interviewer.iml
+sandbox.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
