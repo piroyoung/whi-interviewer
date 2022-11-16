@@ -1,17 +1,14 @@
-from typing import List
-
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
 
 from interviewer.model.environment import Environments
-from interviewer.model.orm import Message
-from interviewer.model.orm import User
 from interviewer.repository.message import DatabaseMessageRepository
 from interviewer.repository.message import MessageRepository
 from interviewer.repository.post import PostRepository
 from interviewer.repository.post import TeamsPostRepository
 from interviewer.repository.user import DatabaseUserRepository
 from interviewer.repository.user import UserRepository
+from interviewer.service.interviewer import InterviewerBatch
 
 if __name__ == "__main__":
     env: Environments = Environments()
@@ -21,6 +18,10 @@ if __name__ == "__main__":
     message_repository: MessageRepository = DatabaseMessageRepository(engine)
     post_repository: PostRepository = TeamsPostRepository(endpoint=env.teams_incoming_webhook)
 
-    users: List[User] = user_repository.get_random(env.number_of_users)
-    messages: List[Message] = message_repository.get_random(1)
-    post_repository.post(messages[0], users=users)
+    b: InterviewerBatch = InterviewerBatch(
+        user_repository=user_repository,
+        message_repository=message_repository,
+        post_repository=post_repository,
+        n_users=env.number_of_users
+    )
+    b.run()
