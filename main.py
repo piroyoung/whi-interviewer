@@ -9,13 +9,16 @@ from interviewer.repository.post import TeamsPostRepository
 from interviewer.repository.user import DatabaseUserRepository
 from interviewer.repository.user import UserRepository
 from interviewer.service.interviewer import InterviewerBatch
+from interviewer.service.migration import DatabaseMigration
 
 if __name__ == "__main__":
     env: Environments = Environments()
     engine: Engine = create_engine(f"mssql+pyodbc:///?odbc_connect={env.mssql_connection_string}")
 
-    user_repository: UserRepository = DatabaseUserRepository(engine)
-    message_repository: MessageRepository = DatabaseMessageRepository(engine)
+    DatabaseMigration(engine=engine).run()
+
+    user_repository: UserRepository = DatabaseUserRepository(engine=engine)
+    message_repository: MessageRepository = DatabaseMessageRepository(engine=engine)
     post_repository: PostRepository = TeamsPostRepository(endpoint=env.teams_incoming_webhook)
 
     b: InterviewerBatch = InterviewerBatch(
