@@ -13,7 +13,7 @@ from interviewer.service.migration import DatabaseMigration
 
 if __name__ == "__main__":
     env: Environments = Environments()
-    engine: Engine = create_engine(f"mssql+pyodbc:///?odbc_connect={env.mssql_connection_string}")
+    engine: Engine = create_engine(f"mssql+pyodbc:///?odbc_connect={env.mssql_connection_string}", encoding="utf8")
 
     DatabaseMigration(engine=engine).run()
 
