@@ -1,6 +1,4 @@
 from datetime import datetime
-from typing import Dict
-from typing import List
 
 from sqlalchemy import Column
 from sqlalchemy import DateTime
@@ -19,16 +17,6 @@ class User(Base):
     created_at = Column(DateTime(), default=datetime.utcnow(), nullable=False)
     updated_at = Column(DateTime(), default=datetime.utcnow(), nullable=False)
 
-    def as_teams_mention_entity(self) -> Dict:
-        return {
-            "type": "mention",
-            "text": f"<at>{self.name}</at>",
-            "mentioned": {
-                "id": self.email,
-                "name": self.name
-            }
-        }
-
 
 class Message(Base):
     __tablename__ = "Messages"
@@ -36,30 +24,3 @@ class Message(Base):
     message = Column(Unicode(), nullable=False)
     created_at = Column(DateTime(), default=datetime.utcnow(), nullable=False)
     updated_at = Column(DateTime(), default=datetime.utcnow(), nullable=False)
-
-    def to(self, users: List[User]) -> Dict:
-        mention_texts: str = " ".join([f"<at>{user.name}</at>\n\n" for user in users])
-        return {
-            "type": "message",
-            "attachments": [
-                {
-                    "contentType": "application/vnd.microsoft.card.adaptive",
-                    "content": {
-                        "type": "AdaptiveCard",
-                        "body": [
-                            {
-                                "type": "TextBlock",
-                                "width": "full",
-                                "text": f"{mention_texts} {self.message}"
-                            }
-                        ],
-                        "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-                        "version": "1.0",
-                        "msteams": {
-                            "width": "full",
-                            "entities": [user.as_teams_mention_entity() for user in users]
-                        }
-                    }
-                }
-            ]
-        }

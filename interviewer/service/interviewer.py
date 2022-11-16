@@ -6,6 +6,8 @@ from ..model.orm import User
 from ..repository.message import MessageRepository
 from ..repository.post import PostRepository
 from ..repository.user import UserRepository
+from ..view.card import Card
+from ..view.card import InterviewCard
 
 
 @dataclass(frozen=True)
@@ -18,4 +20,5 @@ class InterviewerBatch:
     def run(self) -> None:
         users: List[User] = self.user_repository.get_random(self.n_users)
         messages: List[Message] = self.message_repository.get_random(1)
-        self.post_repository.post(messages[0], users=users)
+        card: Card = InterviewCard(message=messages[0], users=users)
+        self.post_repository.post(card)
