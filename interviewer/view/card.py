@@ -1,3 +1,4 @@
+import abc
 from dataclasses import dataclass
 from typing import Dict
 from typing import List
@@ -6,8 +7,14 @@ from ..model.orm import Message
 from ..model.orm import User
 
 
+class Card(metaclass=abc.ABCMeta):
+    @abc.abstractmethod
+    def render(self) -> Dict:
+        pass
+
+
 @dataclass(frozen=True)
-class InterviewCard:
+class InterviewCard(Card):
     message: Message
     users: List[User]
 
@@ -24,6 +31,7 @@ class InterviewCard:
 
     def render(self) -> Dict:
         mention_texts: str = " ".join([f"<at>{user.name}</at>\n\n" for user in self.users])
+        entities: List[Dict] = [InterviewCard.__user_to_mention_entity(user) for user in self.users]
         return {
             "type": "message",
             "attachments": [
@@ -42,7 +50,7 @@ class InterviewCard:
                         "version": "1.0",
                         "msteams": {
                             "width": "full",
-                            "entities": [InterviewCard.__user_to_mention_entity(user) for user in self.users]
+                            "entities": entities
                         }
                     }
                 }
