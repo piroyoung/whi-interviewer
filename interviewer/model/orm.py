@@ -38,7 +38,7 @@ class Message(Base):
     updated_at = Column(DateTime(), default=datetime.utcnow(), nullable=False)
 
     def to(self, users: List[User]) -> Dict:
-        mention_texts: str = " ".join([f"<at>{user.name}</at>\n" for user in users])
+        mention_texts: str = " ".join([f"<at>{user.name}</at>\n\n" for user in users])
         return {
             "type": "message",
             "attachments": [
@@ -49,12 +49,14 @@ class Message(Base):
                         "body": [
                             {
                                 "type": "TextBlock",
+                                "width": "full",
                                 "text": f"{mention_texts} {self.message}"
                             }
                         ],
                         "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
                         "version": "1.0",
                         "msteams": {
+                            "width": "full",
                             "entities": [user.as_teams_mention_entity() for user in users]
                         }
                     }
