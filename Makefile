@@ -10,6 +10,8 @@ install_mssql_driver_on_mac:
 	sudo ln -s /usr/local/etc/odbc.ini /etc/odbc.ini
 
 
-.PHONY: install_mssql_cli
-install_mssql_cli:
-	pip install mssql-cli
+.PHONY: build_docker
+build_docker:
+	docker build -t whi-interviewer:latest .
+	docker tag whi-interviewer:latest piroyoung/whi-interviewer:latest
+	docker push piroyoung/whi-interviewer:latest
