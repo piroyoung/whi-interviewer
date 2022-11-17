@@ -15,7 +15,6 @@ RUN curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/so
 
 RUN apt-get update
 
-# pyodbc動かすのに必要なライブラリ
 RUN ACCEPT_EULA=Y apt-get install -y msodbcsql17
 RUN ACCEPT_EULA=Y apt-get install -y mssql-tools
 RUN ACCEPT_EULA=Y apt-get install -y unixodbc-dev
