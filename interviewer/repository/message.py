@@ -16,6 +16,7 @@ class MessageRepository(metaclass=abc.ABCMeta):
 
 @dataclass(frozen=True)
 class StaticMessageRepository(MessageRepository):
+    # just for debug
     m: Message
 
     def get_random(self, max_k: int) -> List[Message]:
