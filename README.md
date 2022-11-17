@@ -8,7 +8,8 @@ Teamsのランダムな複数ユーザにランダムな質問を配信するバ
 
 Dockerhubにてイメージを公開しています．
 
-https://hub.docker.com/repository/docker/piroyoung/whi-interviewer
+https://hub.docker.com/r/piroyoung/whi-interviewer
+
 
 ```shell
 docker run -it piroyoung/whi-interviewer:latest \
