@@ -3,7 +3,6 @@ import random
 from dataclasses import dataclass
 from typing import List
 
-from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session
 
 from ..model.orm import Message
@@ -26,9 +25,8 @@ class StaticMessageRepository(MessageRepository):
 
 @dataclass(frozen=True)
 class DatabaseMessageRepository(MessageRepository):
-    engine: Engine
+    session: Session
 
     def get_random(self, max_k: int) -> List[Message]:
-        with Session(autocommit=True, autoflush=True, bind=self.engine) as session:
-            messages: List[Message] = session.query(Message).all()
-            return random.sample(messages, k=max_k)
+        messages: List[Message] = self.session.query(Message).all()
+        return random.sample(messages, k=max_k)
