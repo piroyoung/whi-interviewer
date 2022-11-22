@@ -10,8 +10,6 @@ install_mssql_driver_on_mac:
 	sudo ln -s /usr/local/etc/odbc.ini /etc/odbc.ini
 
 
-.PHONY: build_docker
-build_docker:
-	docker build -t whi-interviewer:latest .
-	docker tag whi-interviewer:latest piroyoung/whi-interviewer:latest
-	docker push piroyoung/whi-interviewer:latest
+.PHONY: deploy
+deploy:
+	az container create --resource-group whi --file ./container_instances.yaml
