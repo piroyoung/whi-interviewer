@@ -2,6 +2,9 @@
 .idea
 whi-interviewer.iml
 sandbox.py
+container_instances.yaml
+Makefile
+initialize.sql
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
