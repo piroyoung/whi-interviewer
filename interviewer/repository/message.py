@@ -1,14 +1,21 @@
 import abc
 import random
+from dataclasses import asdict
 from dataclasses import dataclass
-from typing import List
+from logging import Logger
+from logging import getLogger
+from typing import List, Dict
 
 from sqlalchemy.orm import Session
 
 from ..model.orm import Message
+from ..util import Describable
+from ..util import observe
+
+_logger: Logger = getLogger(__name__)
 
 
-class MessageRepository(metaclass=abc.ABCMeta):
+class MessageRepository(Describable):
     @abc.abstractmethod
     def get_random(self, max_k: int) -> List[Message]:
         raise NotImplementedError()
@@ -19,6 +26,10 @@ class StaticMessageRepository(MessageRepository):
     # just for debug
     m: Message
 
+    def describe(self) -> Dict:
+        return asdict(self)
+
+    @observe(logger=_logger)
     def get_random(self, max_k: int) -> List[Message]:
         assert max_k > 0
         return [self.m]
@@ -28,6 +39,10 @@ class StaticMessageRepository(MessageRepository):
 class DatabaseMessageRepository(MessageRepository):
     session: Session
 
+    def describe(self) -> Dict:
+        return {}
+
+    @observe(logger=_logger)
     def get_random(self, max_k: int) -> List[Message]:
         messages: List[Message] = self.session.query(Message).all()
         return random.sample(messages, k=max_k)
