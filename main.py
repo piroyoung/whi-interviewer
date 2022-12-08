@@ -1,3 +1,8 @@
+from logging import Handler
+from logging import INFO
+from logging import StreamHandler
+from logging import basicConfig
+
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session
@@ -11,6 +16,13 @@ from interviewer.repository.user import DatabaseUserRepository
 from interviewer.repository.user import UserRepository
 from interviewer.service.interviewer import InterviewerBatch
 from interviewer.service.migration import DatabaseMigration
+
+_h: Handler = StreamHandler()
+
+basicConfig(
+    level=INFO,
+    handlers=[_h]
+)
 
 if __name__ == "__main__":
     env: Environments = Environments()
