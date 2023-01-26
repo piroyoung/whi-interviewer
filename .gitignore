@@ -5,6 +5,7 @@ sandbox.py
 container_instances.yaml
 Makefile
 initialize.sql
+Makefile
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
