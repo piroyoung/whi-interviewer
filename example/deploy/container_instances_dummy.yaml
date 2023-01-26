@@ -1,0 +1,36 @@
+name: "smc-jp-whi-interviewer"
+apiVersion: '2021-10-01'
+location: 'japaneast'
+"identity": {
+  "type": "UserAssigned",
+  "userAssignedIdentities": {
+    "/subscriptions/{subscription id}/resourceGroups/{resource group name}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{user assigned managed id}": {
+    }
+  }
+}
+properties:
+  osType: "Linux"
+  restartPolicy: "Never"
+  subnetIds:
+    - id: "/subscriptions/{subscription id}/resourceGroups/{resource group name}/providers/Microsoft.Network/virtualNetworks/{vnet name}/subnets/{subnet_name}"
+      name: default
+  containers:
+    - name: "smc-jp-whi-interviewer-0-0-2"
+      properties:
+        image: "piroyoung/whi-interviewer:0.0.2"
+        command:
+          - "poetry"
+          - "run"
+          - "python"
+          - "main.py"
+        resources:
+          requests:
+            memoryInGB: 1.5
+            cpu: 1
+        environmentVariables:
+          - name: "TEAMS_INCOMING_WEBHOOK"
+            value: "some teams webhooks"
+          - name: "MSSQL_CONNECTION_STRING"
+            value: "Driver={ODBC Driver 17 for SQL Server};Server=tcp:smc-jp-whi.privatelink.database.windows.net,1433;Database=interviewer;Uid=de45ff33-3b44-4b71-b736-8c58ec3f672e;Encrypt=yes;TrustServerCertificate=yes;Connection Timeout=90;Authentication=ActiveDirectoryMSI"
+          - name: "NUMBER_OF_USERS"
+            value: "3"
