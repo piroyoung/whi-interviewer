@@ -30,6 +30,6 @@ class InterviewerBatch(Describable):
     @observe(logger=_logger)
     def run(self) -> None:
         users: List[User] = self.user_repository.get_random(self.n_users)
-        messages: List[Message] = self.message_repository.get_random(1)
-        card: Card = InterviewCard(message=messages[0], users=users)
+        messages: List[Message] = self.message_repository.get()
+        card: Card = InterviewCard(message=messages, users=users)
         self.post_repository.post(card)

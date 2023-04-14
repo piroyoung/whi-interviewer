@@ -43,7 +43,8 @@ class InterviewCard(Card):
                             {
                                 "type": "TextBlock",
                                 "width": "full",
-                                "text": f"{mention_texts} {self.message.message}"
+                                "text": f"{mention_texts} {self.message.message}",
+                                "wrap": True
                             }
                         ],
                         "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",

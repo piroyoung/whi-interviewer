@@ -6,11 +6,12 @@ authors = ["piroyoung <piroyoung@users.noreply.github.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.11.3"
 requests = "^2.28.1"
 sqlalchemy = "^1.4.44"
 pyodbc = "^4.0.34"
 msal = "^1.20.0"
+openai = "^0.27.4"
 
 
 [build-system]
