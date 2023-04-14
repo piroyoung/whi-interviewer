@@ -1,5 +1,6 @@
 import abc
 import random
+from abc import ABC
 from dataclasses import asdict
 from dataclasses import dataclass
 from logging import Logger
@@ -17,7 +18,7 @@ _logger: Logger = getLogger(__name__)
 
 class MessageRepository(Describable):
     @abc.abstractmethod
-    def get_random(self, max_k: int) -> List[Message]:
+    def get(self) -> Message:
         raise NotImplementedError()
 
 
@@ -30,9 +31,8 @@ class StaticMessageRepository(MessageRepository):
         return asdict(self)
 
     @observe(logger=_logger)
-    def get_random(self, max_k: int) -> List[Message]:
-        assert max_k > 0
-        return [self.m]
+    def get(self) -> Message:
+        return self.m
 
 
 @dataclass(frozen=True)
@@ -43,6 +43,7 @@ class DatabaseMessageRepository(MessageRepository):
         return {}
 
     @observe(logger=_logger)
-    def get_random(self, max_k: int) -> List[Message]:
+    def get(self) -> Message:
         messages: List[Message] = self.session.query(Message).all()
-        return random.sample(messages, k=max_k)
+        return random.sample(messages, k=1)[0]
+
