@@ -1,6 +1,5 @@
 import abc
 import random
-from abc import ABC
 from dataclasses import asdict
 from dataclasses import dataclass
 from logging import Logger
@@ -46,4 +45,3 @@ class DatabaseMessageRepository(MessageRepository):
     def get(self) -> Message:
         messages: List[Message] = self.session.query(Message).all()
         return random.sample(messages, k=1)[0]
-
