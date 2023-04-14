@@ -19,3 +19,9 @@ class Environments:
         n: str = os.environ.get("NUMBER_OF_USERS")
         assert n
         return int(n)
+
+    @property
+    def openai_api_key(self) -> str:
+        key: str = os.environ.get("OPENAI_API_KEY")
+        assert key
+        return key

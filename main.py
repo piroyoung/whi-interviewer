@@ -8,7 +8,7 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session
 
 from interviewer.model.environment import Environments
-from interviewer.repository.message import DatabaseMessageRepository
+from interviewer.repository.message import DatabaseMessageRepository, OpenAIMessageRepository
 from interviewer.repository.message import MessageRepository
 from interviewer.repository.post import PostRepository
 from interviewer.repository.post import TeamsPostRepository
@@ -31,7 +31,17 @@ if __name__ == "__main__":
 
     with Session(autocommit=True, autoflush=True, bind=engine) as session:
         user_repository: UserRepository = DatabaseUserRepository(session=session)
-        message_repository: MessageRepository = DatabaseMessageRepository(session=session)
+        # message_repository: MessageRepository = DatabaseMessageRepository(session=session)
+        message_repository: MessageRepository = OpenAIMessageRepository(
+            session=session,
+            api_type="azure",
+            api_key=env.openai_api_key,
+            api_base="https://example-aoai-02.openai.azure.com",
+            api_version="2023-03-15-preview",
+            deployment_id="gpt-35-turbo-0301",
+            model_name="gpt-35-turbo"
+        )
+
         post_repository: PostRepository = TeamsPostRepository(endpoint=env.teams_incoming_webhook)
 
         b: InterviewerBatch = InterviewerBatch(

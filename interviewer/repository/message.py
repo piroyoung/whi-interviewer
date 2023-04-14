@@ -2,11 +2,13 @@ import abc
 import random
 from dataclasses import asdict
 from dataclasses import dataclass
+from datetime import datetime
 from logging import Logger
 from logging import getLogger
 from typing import List, Dict
 
 import openai
+from openai.openai_object import OpenAIObject
 from sqlalchemy.orm import Session
 
 from ..model.orm import Message, Prompt
@@ -55,10 +57,16 @@ class OpenAIMessageRepository(MessageRepository):
     api_key: str
     api_base: str
     api_version: str
+    deployment_id: str
     model_name: str
 
     def describe(self) -> Dict:
-        return asdict(self)
+        return {
+            "api_type": self.api_type,
+            "api_base": self.api_base,
+            "api_version": self.api_version,
+            "model_name": self.model_name
+        }
 
     @observe(logger=_logger)
     def get(self) -> Message:
@@ -69,6 +77,7 @@ class OpenAIMessageRepository(MessageRepository):
         prompts: List[Prompt] = self.session.query(Prompt).all()
         prompt: Prompt = random.sample(prompts, k=1)[0]
 
+        today: str = datetime.today().strftime("%Y年%m月%d日")
         prompts = [
             {
                 "role": "system",
@@ -76,14 +85,15 @@ class OpenAIMessageRepository(MessageRepository):
             },
             {
                 "role": "user",
-                "content": prompt.user
+                "content": f"今日は{today}です。{prompt.user}"
             }
         ]
 
-        response = openai.ChatCompletion.create(
+        response: OpenAIObject = openai.ChatCompletion.create(
             model=self.model_name,
+            deployment_id=self.deployment_id,
             messages=prompts
         )
-        # just for debug
-        print(type(response))
-        return Message(message=response.choices[0].message.content)
+        m: str = response.choices[0].message.content
+
+        return Message(message=m)
