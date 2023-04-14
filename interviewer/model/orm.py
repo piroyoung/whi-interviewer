@@ -1,10 +1,13 @@
 from datetime import datetime
 
+from sqlalchemy import Boolean
 from sqlalchemy import Column
 from sqlalchemy import DateTime
+from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import Unicode
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship
 
 Base = declarative_base()
 
@@ -16,6 +19,7 @@ class User(Base):
     name = Column(Unicode(), nullable=False)
     created_at = Column(DateTime(), default=datetime.utcnow(), nullable=False)
     updated_at = Column(DateTime(), default=datetime.utcnow(), nullable=False)
+    is_active = Column(Boolean(), default=True, nullable=False)
 
 
 class Message(Base):
@@ -24,6 +28,7 @@ class Message(Base):
     message = Column(Unicode(), nullable=False)
     created_at = Column(DateTime(), default=datetime.utcnow(), nullable=False)
     updated_at = Column(DateTime(), default=datetime.utcnow(), nullable=False)
+    is_active = Column(Boolean(), default=True, nullable=False)
 
 
 class Prompt(Base):
@@ -33,3 +38,13 @@ class Prompt(Base):
     user = Column(Unicode(), nullable=False)
     created_at = Column(DateTime(), default=datetime.utcnow(), nullable=False)
     updated_at = Column(DateTime(), default=datetime.utcnow(), nullable=False)
+    is_active = Column(Boolean(), default=True, nullable=False)
+    assistant_message_logs = relationship("AssistantMessageLog")
+
+
+class AssistantMessageLog(Base):
+    __tablename__ = "AssistantMessageLogs"
+    id = Column(Integer(), primary_key=True, autoincrement=True, unique=True, nullable=False)
+    prompt_id = Column(Integer(), ForeignKey("Prompts.id"), nullable=False)
+    message = Column(Unicode(), nullable=False)
+    created_at = Column(DateTime(), default=datetime.utcnow(), nullable=False)

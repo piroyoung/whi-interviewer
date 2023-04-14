@@ -30,5 +30,5 @@ class DatabaseUserRepository(UserRepository):
 
     @observe(logger=_logger)
     def get_random(self, max_k: int) -> List[User]:
-        messages: List[User] = self.session.query(User).all()
+        messages: List[User] = self.session.query(User).filter(User.is_active == True).all()
         return random.sample(messages, k=max_k)
