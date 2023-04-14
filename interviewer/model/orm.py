@@ -24,3 +24,12 @@ class Message(Base):
     message = Column(Unicode(), nullable=False)
     created_at = Column(DateTime(), default=datetime.utcnow(), nullable=False)
     updated_at = Column(DateTime(), default=datetime.utcnow(), nullable=False)
+
+
+class Prompt(Base):
+    __tablename__ = "Prompts"
+    id = Column(Integer(), primary_key=True, autoincrement=True, unique=True, nullable=False)
+    system = Column(Unicode(), nullable=False)
+    user = Column(Unicode(), nullable=False)
+    created_at = Column(DateTime(), default=datetime.utcnow(), nullable=False)
+    updated_at = Column(DateTime(), default=datetime.utcnow(), nullable=False)
