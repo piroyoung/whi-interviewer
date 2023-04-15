@@ -5,13 +5,16 @@ from dataclasses import dataclass
 from datetime import datetime
 from logging import Logger
 from logging import getLogger
-from typing import List, Dict
+from typing import Dict
+from typing import List
 
 import openai
 from openai.openai_object import OpenAIObject
 from sqlalchemy.orm import Session
 
-from ..model.orm import Message, Prompt
+from ..model.orm import AssistantMessageLog
+from ..model.orm import Message
+from ..model.orm import Prompt
 from ..util import Describable
 from ..util import observe
 
@@ -46,7 +49,7 @@ class DatabaseMessageRepository(MessageRepository):
 
     @observe(logger=_logger)
     def get(self) -> Message:
-        messages: List[Message] = self.session.query(Message).all()
+        messages: List[Message] = self.session.query(Message).filter(Message.is_active == True).all()
         return random.sample(messages, k=1)[0]
 
 
@@ -74,7 +77,7 @@ class OpenAIMessageRepository(MessageRepository):
         openai.api_type = self.api_type
         openai.api_base = self.api_base
         openai.api_version = self.api_version
-        prompts: List[Prompt] = self.session.query(Prompt).all()
+        prompts: List[Prompt] = self.session.query(Prompt).filter(Prompt.is_active == True).all()
         prompt: Prompt = random.sample(prompts, k=1)[0]
 
         today: str = datetime.today().strftime("%Y年%m月%d日")
@@ -95,5 +98,13 @@ class OpenAIMessageRepository(MessageRepository):
             messages=prompts
         )
         m: str = response.choices[0].message.content
+
+        log: AssistantMessageLog = AssistantMessageLog(
+            prompt_id=prompt.id,
+            message=m,
+        )
+        self.session.begin()
+        self.session.add(log)
+        self.session.commit()
 
         return Message(message=m)
