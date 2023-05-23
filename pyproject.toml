@@ -7,7 +7,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11.3"
-requests = "^2.28.1"
+requests = "^2.31.0"
 sqlalchemy = "^1.4.44"
 pyodbc = "^4.0.34"
 msal = "^1.20.0"
